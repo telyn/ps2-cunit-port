@@ -16,7 +16,7 @@ location it was installed to - see https://github.com/ps2dev/ps2dev to ensure
 you're set-up fully.
 
 ```console
-git clone https://github.com/telyn/ps2unit.git
-cd ps2unit
+git clone https://github.com/telyn/ps2-cunit-port.git
+cd ps2unit-cunit-port
 ./install-cunit.sh
 ```
