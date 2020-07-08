@@ -1,2 +1,4 @@
 CUnit*/
 cunit.tar.gz
+*.o
+test-bin
