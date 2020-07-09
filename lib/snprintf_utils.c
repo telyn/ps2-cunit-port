@@ -1,9 +1,10 @@
 #include <string.h>
+#include <stdio.h>
 #include "snprintf_utils.h"
 
 void reset_snpf_format(struct snpf_format *fmt) {
-	fmt->width = 0;
-	fmt->precision = 0;
+	fmt->width = -1;
+	fmt->precision = -1;
 	fmt->align = PS2SNPF_RIGHT;
 	fmt->padding = ' ';
 }
@@ -26,33 +27,44 @@ char *snpf_pad_str(char *dst, char padding, int width, int *dstc, int dstlen) {
 // dstlen is max number of chars we can write to dst.
 // returns length of the string that would be inserted if all characters could be (e.g. %20.5s -> returns 20)
 // TODO: test me
-int format_snpf_str(char *dst, int dstlen, struct snpf_format *fmt, char *src) {
+int format_snpf_str(char *dst, int dstlen, const struct snpf_format * const fmt, char * src) {
 	int len = strlen(src);
-	if (fmt->precision < len) {
+	if (fmt->precision < len && fmt->precision != -1) {
 		len = fmt->precision;
 	}
 	//count of characters written into dst - also used for return value
 	int dstc = 0;
 	int i;
 
-	if (fmt->align == PS2SNPF_RIGHT && fmt->width != 0) {
-		snpf_pad_str(dst, fmt->padding, fmt->width - len, &dstc, dstlen);
+	if (fmt->align == PS2SNPF_RIGHT && fmt->width != -1) {
+		// printf("snpf_pad_str(%s, %c, %d, %d, %d)\n", dst, fmt->padding, fmt->width - len, dstc, dstlen);
+		dst = snpf_pad_str(dst, fmt->padding, fmt->width - len, &dstc, dstlen);
 	}
-
 	// actual string insertion!
 	int cpyn = len;
 	if ((dstlen - dstc) < cpyn) {
 		cpyn = dstlen - dstc;
 	}
-	strncpy(dst + dstc, src, cpyn);
+	if (cpyn < 0) {
+		cpyn = 0;
+	}
+	// printf("strncpy(%s, %s, %d)\n", dst, src, cpyn);
+	strncpy(dst, src, cpyn);
+	dstc += len;
+	dst += len;
 
 	// right padding
-	if (fmt->align == PS2SNPF_RIGHT && fmt->width != 0) {
-		for(i = 0; i < fmt->width - len; i++) {
-			if(dstc++ >= dstlen) {
-				continue;
-			}
-			dst[i] = fmt->padding;
-		}
+	if (fmt->align == PS2SNPF_LEFT && fmt->width != -1) {
+		dst = snpf_pad_str(dst, fmt->padding, fmt->width - len, &dstc, dstlen);
 	}
+	return dstc;
+}
+
+int read_number(char **src) {
+	int num = 0;
+	while(**src >= '0' && **src <= '9') {
+		num = num * 10 + (**src - '0');
+		(*src)++;
+	}
+	return num;
 }

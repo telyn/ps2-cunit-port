@@ -1,7 +1,13 @@
-#include <stdarg.h>
 #include <string.h>
 #include "snprintf.h"
 #include "snprintf_utils.h"
+
+void _ps2snpf_read_normal(struct snpf_state *state);
+void _ps2snpf_read_fmt_start(struct snpf_state *state);
+void _ps2snpf_read_fmt_align(struct snpf_state *state);
+void _ps2snpf_read_fmt_width(struct snpf_state *state);
+void _ps2snpf_read_fmt_precision(struct snpf_state *state);
+void _ps2snpf_read_fmt_type(struct snpf_state *state);
 
 
 // this is not intended to be a complete implementation of snprintf - it is only
@@ -10,73 +16,102 @@
 // TODO: rewrite in terms of format_snpf_str
 // TODO: split into one-function-per-state
 // TODO: see if we can inline all those functions?
-int _ps2_cunit_snprintf (char * dst, size_t n, const char *format, ... ) {
+int _ps2_cunit_snprintf (char * dst, size_t dstlen, const char *format, ... ) {
 	va_list args;
 	va_start(args, format);
 
-	int pos = 0;
-	int dpos = 0;
-	enum snpf_state_label state = PS2SNPF_STATE_DEFAULT;
+	struct snpf_state state = {
+		.dstlen = dstlen,
+		.bytes_written = 0,
+		.dst = dst,
+		.src = format,
+		.values = &args
+	};
+	reset_snpf_format(&state.fmt);
 
-	struct snpf_format format_spec;
-	reset_snpf_format(&format_spec);
-
-	while(format[pos] != '\0') {
-		char chr = format[pos];
-		switch(state) {
-			case PS2SNPF_STATE_DEFAULT:
-				switch(chr) {
-					case '%':
-						state = PS2SNPF_STATE_FMT_ALIGN;
-						break;
-					default:
-						if(dpos < n) {
-							dst[dpos] = chr;
-						}
-						dpos++;
-						break;
-				}
+	while(*state.src != '\0') {
+		switch(state.label) {
+			case PS2SNPFS_NORMAL:
+				_ps2snpf_read_normal(&state);
 				break;
-
-			case PS2SNPF_STATE_FMT_ALIGN:
-			case PS2SNPF_STATE_FMT_WIDTH:
-				if ((chr >= 'a' && chr <= 'z') ||
-						(chr >= 'A' && chr <= 'Z')) {
-					switch(chr) {
-						case 's':
-						case 'S':
-							{
-							}
-							break;
-						case 'd':
-						case 'D':
-							break;
-						case 'u':
-						case 'U':
-							break;
-					}
-					reset_snpf_format(&format_spec);
-					state = PS2SNPF_STATE_DEFAULT;
-				} else if (chr >= '0' && chr <= '9') {
-					format_spec.width *= 10;
-					format_spec.width += chr;
-				} else if (chr == '-') {
-					format_spec.align = PS2SNPF_LEFT;
-				} else if (chr == '*') {
-					format_spec.width = va_arg(args, int);
-				} else if (chr == '%') {
-					dst[dpos++] = chr;
-					state = PS2SNPF_STATE_DEFAULT;
-				}
+			case PS2SNPFS_FMT_START:
+				_ps2snpf_read_fmt_start(&state);
 				break;
-			case PS2SNPF_STATE_FMT_PRECISION:
+			case PS2SNPFS_FMT_ALIGN:
+				_ps2snpf_read_fmt_align(&state);
+				break;
+			case PS2SNPFS_FMT_WIDTH:
+				_ps2snpf_read_fmt_width(&state);
+				break;
+			case PS2SNPFS_FMT_PRECISION:
+				_ps2snpf_read_fmt_precision(&state);
+				break;
+			case PS2SNPFS_FMT_TYPE:
+				_ps2snpf_read_fmt_type(&state);
 				break;
 		}
-		pos++;
 	}
-	dst[n] = '\0';
+
 	va_end(args);
-	return dpos+1;
+	return state.bytes_written;
+}
+
+void _ps2snpf_write_char(struct snpf_state *state, char chr) {
+	if(state->bytes_written < state->dstlen) {
+		*state->dst = *state->src;
+	}
+	state->dst++;
+	state->bytes_written++;
+}
+
+void _ps2snpf_read_normal(struct snpf_state *state) {
+	while(*state->src != '%' && *state->src != '\0') {
+		_ps2snpf_write_char(state, *state->src);
+		state->src++;
+	}
+	if(*state->src == '%') {
+		state->label = PS2SNPFS_FMT_START;
+	}
+}
+
+void _ps2snpf_read_fmt_start(struct snpf_state *state) {
+	if(*state->src != '%') {
+		return;
+	}
+	state->src++;
+
+	if(*state->src == '%') {
+		_ps2snpf_write_char(state, '%');
+		state->label = PS2SNPFS_NORMAL;
+		return;
+	}
+
+	state->label = PS2SNPFS_FMT_ALIGN;
+}
+
+void _ps2snpf_read_fmt_align(struct snpf_state *state) {
+	if(*state->src == '-') {
+		state->fmt.align = PS2SNPF_LEFT;
+	}
+	state->label = PS2SNPFS_FMT_WIDTH;
+}
+
+void _ps2snpf_read_fmt_width(struct snpf_state *state) {
+	if(*state->src < '0' || *state->src > '9') {
+		state->label = PS2SNPFS_FMT_PRECISION;
+		return;
+	}
+
+	read_number(&state->src);
+	state->label = PS2SNPFS_FMT_PRECISION;
+}
+
+void _ps2snpf_read_fmt_precision(struct snpf_state *state) {
+
+}
+
+void _ps2snpf_read_fmt_type(struct snpf_state *state) {
+
 }
 
 //vi:set tabstop=4
