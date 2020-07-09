@@ -34,7 +34,6 @@ int format_snpf_str(char *dst, int dstlen, const struct snpf_format * const fmt,
 	}
 	//count of characters written into dst - also used for return value
 	int dstc = 0;
-	int i;
 
 	if (fmt->align == PS2SNPF_RIGHT && fmt->width != -1) {
 		// printf("snpf_pad_str(%s, %c, %d, %d, %d)\n", dst, fmt->padding, fmt->width - len, dstc, dstlen);
@@ -48,7 +47,7 @@ int format_snpf_str(char *dst, int dstlen, const struct snpf_format * const fmt,
 	if (cpyn < 0) {
 		cpyn = 0;
 	}
-	// printf("strncpy(%s, %s, %d)\n", dst, src, cpyn);
+
 	strncpy(dst, src, cpyn);
 	dstc += len;
 	dst += len;
@@ -60,7 +59,7 @@ int format_snpf_str(char *dst, int dstlen, const struct snpf_format * const fmt,
 	return dstc;
 }
 
-int read_number(char **src) {
+int read_number(const char **src) {
 	int num = 0;
 	while(**src >= '0' && **src <= '9') {
 		num = num * 10 + (**src - '0');

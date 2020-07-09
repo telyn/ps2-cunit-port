@@ -1,6 +1,8 @@
 #include <string.h>
+#include <stdio.h>
 #include "snprintf.h"
 #include "snprintf_utils.h"
+#include "toa.h"
 
 void _ps2snpf_read_normal(struct snpf_state *state);
 void _ps2snpf_read_fmt_start(struct snpf_state *state);
@@ -92,26 +94,66 @@ void _ps2snpf_read_fmt_start(struct snpf_state *state) {
 void _ps2snpf_read_fmt_align(struct snpf_state *state) {
 	if(*state->src == '-') {
 		state->fmt.align = PS2SNPF_LEFT;
+		state->src++;
 	}
 	state->label = PS2SNPFS_FMT_WIDTH;
 }
 
 void _ps2snpf_read_fmt_width(struct snpf_state *state) {
-	if(*state->src < '0' || *state->src > '9') {
-		state->label = PS2SNPFS_FMT_PRECISION;
-		return;
+	if(*state->src == '*') {
+		state->fmt.width = va_arg(*state->values, int);
+		state->src++;
+	} else {
+		state->fmt.width = read_number(&state->src);
 	}
-
-	read_number(&state->src);
 	state->label = PS2SNPFS_FMT_PRECISION;
 }
 
 void _ps2snpf_read_fmt_precision(struct snpf_state *state) {
-
+	if(*state->src != '.') {
+		state->label = PS2SNPFS_FMT_TYPE;
+		return;
+	}
+	state->src++;
+	if(*state->src == '*') {
+		state->fmt.precision = va_arg(*state->values, int);
+		state->src++;
+	} else {
+		state->fmt.precision = read_number(&state->src);
+	}
+	state->label = PS2SNPFS_FMT_TYPE;
 }
 
 void _ps2snpf_read_fmt_type(struct snpf_state *state) {
-
+	switch(*state->src++) {
+		case 'd':
+			{
+				char buf[20];
+				ps2_itoa(va_arg(*state->values, int), buf);
+				break;
+			}
+		case 'f':
+			{
+				char buf[20];
+				ps2_ftoa(va_arg(*state->values, double), buf);
+				break;
+			}
+		case 's':
+			{
+				char *src2 = va_arg(*state->values, char *);
+				int change = format_snpf_str(state->dst,
+						                     state->dstlen,
+											 &state->fmt, src2);
+				state->dst += change;
+				state->bytes_written += change;
+				break;
+			}
+		default:
+			printf("Unexpected char %c at position %ld - pretending none of this ever happened", *state->src, state->src - state->orig);
+			break;
+	}
+	reset_snpf_format(&state->fmt);
+	state->label = PS2SNPFS_NORMAL;
 }
 
 //vi:set tabstop=4

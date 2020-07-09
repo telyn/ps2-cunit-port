@@ -7,7 +7,7 @@ void test_snprintf_plain() {
 	char dst[22] = { '\0' };
 	int res = _ps2_cunit_snprintf(dst, 22, format);
 	CU_ASSERT_STRING_EQUAL(dst, "hello world");
-	CU_ASSERT_EQUAL(res, 12);
+	CU_ASSERT_EQUAL(res, 11);
 }
 
 void test_snprintf_plain_smalln() {
@@ -15,7 +15,7 @@ void test_snprintf_plain_smalln() {
 	char dst[22] = { '\0' };
 	int res = _ps2_cunit_snprintf(dst, 6, format);
 	CU_ASSERT_STRING_EQUAL(dst, "hello ");
-	CU_ASSERT_EQUAL(res, 12);
+	CU_ASSERT_EQUAL(res, 11);
 }
 
 
@@ -24,7 +24,7 @@ void test_snprintf_plain_pct_literal() {
 	char dst[22] = { '\0' };
 	int res = _ps2_cunit_snprintf(dst, 22, format);
 	CU_ASSERT_STRING_EQUAL(dst, "hello world %");
-	CU_ASSERT_EQUAL(res, 14);
+	CU_ASSERT_EQUAL(res, 13);
 }
 
 void test_snprintf_int() {

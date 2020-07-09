@@ -29,11 +29,12 @@ struct snpf_state {
 	int bytes_written;
 	char *dst;
 	const char *src;
+	const char * const orig;
 };
 
 void reset_snpf_format(struct snpf_format *fmt);
 char *snpf_pad_str(char *dst, char padding, int width, int *dstc, int dstlen);
 int format_snpf_str(char *dst, int dstlen, const struct snpf_format * const fmt, char * src);
-int read_number(char **src);
+int read_number(const char **src);
 
 #endif
