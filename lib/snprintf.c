@@ -125,33 +125,40 @@ void _ps2snpf_read_fmt_precision(struct snpf_state *state) {
 }
 
 void _ps2snpf_read_fmt_type(struct snpf_state *state) {
+	char *tmp;
+	char buf[32] = { '\0' };
 	switch(*state->src++) {
 		case 'd':
 			{
-				char buf[20];
-				ps2_itoa(va_arg(*state->values, int), buf);
+				int i = va_arg(*state->values, int);
+				if(state->fmt.precision == 0 && i == 0) {
+					tmp = buf;
+					break;
+				}
+				ps2_itoa(i, buf);
+				tmp = buf;
 				break;
 			}
 		case 'f':
 			{
-				char buf[20];
 				ps2_ftoa(va_arg(*state->values, double), buf);
+				tmp = buf;
 				break;
 			}
 		case 's':
 			{
-				char *src2 = va_arg(*state->values, char *);
-				int change = format_snpf_str(state->dst,
-						                     state->dstlen,
-											 &state->fmt, src2);
-				state->dst += change;
-				state->bytes_written += change;
+				tmp = va_arg(*state->values, char *);
 				break;
 			}
 		default:
 			printf("Unexpected char %c at position %ld - pretending none of this ever happened", *state->src, state->src - state->orig);
-			break;
+			return;
 	}
+	int change = format_snpf_str(state->dst,
+			                     state->dstlen,
+			                     &state->fmt, tmp);
+	state->dst += change;
+	state->bytes_written += change;
 	reset_snpf_format(&state->fmt);
 	state->label = PS2SNPFS_NORMAL;
 }

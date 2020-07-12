@@ -28,7 +28,36 @@ void test_snprintf_plain_pct_literal() {
 }
 
 void test_snprintf_int() {
-	CU_ASSERT(0);
+	char format[] = "hello %d world";
+	char dst[22] = { '\0' };
+	int res = _ps2_cunit_snprintf(dst, 22, format, 1530008);
+	CU_ASSERT_STRING_EQUAL(dst, "hello 1530008 world");
+	CU_ASSERT_EQUAL(res, 19);
+}
+
+void test_snprintf_int_zero() {
+	char format[] = "hello %d world";
+	char dst[22] = { '\0' };
+	int res = _ps2_cunit_snprintf(dst, 22, format, 0);
+	CU_ASSERT_STRING_EQUAL(dst, "hello 0 world");
+	CU_ASSERT_EQUAL(res, 13);
+}
+
+void test_snprintf_int_zero_precision_zero() {
+	char format[] = "hello %.0d world";
+	char dst[22] = { '\0' };
+	int res = _ps2_cunit_snprintf(dst, 22, format, 0);
+	printf("act :'%s'\n", dst);
+	CU_ASSERT_STRING_EQUAL(dst, "hello  world");
+	CU_ASSERT_EQUAL(res, 12);
+}
+
+void test_snprintf_int_negative() {
+	char format[] = "hello world %%";
+	char dst[22] = { '\0' };
+	int res = _ps2_cunit_snprintf(dst, 22, format);
+	CU_ASSERT_STRING_EQUAL(dst, "hello world %");
+	CU_ASSERT_EQUAL(res, 13);
 }
 
 void test_snprintf_int_smalln() {
@@ -61,6 +90,9 @@ CU_pSuite snprintf_suite() {
 	CU_ADD_TEST(snprintf_suite, test_snprintf_plain_pct_literal);
 	ps2snpftest_add_string_tests(snprintf_suite);
 	CU_ADD_TEST(snprintf_suite, test_snprintf_int);
+	CU_ADD_TEST(snprintf_suite, test_snprintf_int_negative);
+	CU_ADD_TEST(snprintf_suite, test_snprintf_int_zero);
+	CU_ADD_TEST(snprintf_suite, test_snprintf_int_zero_precision_zero);
 	CU_ADD_TEST(snprintf_suite, test_snprintf_int_smalln);
 	CU_ADD_TEST(snprintf_suite, test_snprintf_uint);
 	CU_ADD_TEST(snprintf_suite, test_snprintf_uint_smalln);
