@@ -38,5 +38,5 @@ if [ "$IOP" -eq 1 ]; then
     echo "Modifying libtool for IOP"
     sed -i'.bak' -e 's/ee\//iop\//g' -e 's/ee-/iop-/g' -e 's/mips64r5900el/mipsel-scei/' libtool
     echo "Building & installing for IOP"
-    make install CC=iop-gcc LD=iop-ld AR=iop-ar ac_ct_AR=iop-ar RANLIB=iop-ranlib CFLAGS="-miop -D_IOP -DRELEASE=@RELEASE@ -Wall -W -pedantic -Wshadow -I/Users/telyn/Code/CUnit-2.1-3/CUnit/Headers -std=c99 -I$PS2SDK/iop/include -I$PS2SDK/common/include -I$PS2CUNIT/include"
+    make install CC=iop-gcc LD=iop-ld AR=iop-ar ac_ct_AR=iop-ar RANLIB=iop-ranlib CFLAGS="-miop -nostdlib -D_IOP -DRELEASE=@RELEASE@ -Wall -W -pedantic -Wshadow -I/Users/telyn/Code/CUnit-2.1-3/CUnit/Headers -std=c99 -I$PS2SDK/iop/include -I$PS2SDK/common/include -I$PS2CUNIT/include" LDFLAGS="-nostdlib -static"
 fi

@@ -18,12 +18,9 @@
 #define setvbuf _ps2_setvbuf
 
 // TODO: extract into .c file
-void _ps2_setvbuf(int fd, char *buf, int mode, int whatever) {
-}
-void _ps2_cunit_exit(int code) {
-	printf("Exiting with code %d\n", code);
-	ExitThread();
-}
+void _ps2_setvbuf(int fd, char *buf, int mode, int whatever);
+void _ps2_cunit_exit(int code);
+
 #define exit _ps2_cunit_exit
 
 #endif
