@@ -2,10 +2,11 @@
 set -eo pipefail
 
 PS2CUNIT=$PWD
-DL=0
+DL=1
 CONFIG=1
-EE=0
+EE=1
 IOP=1
+DOC=1
 
 if [ $DL -eq 1 ]; then
     wget -O cunit.tar.gz https://sourceforge.net/projects/cunit/files/latest/download
