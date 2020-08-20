@@ -7,7 +7,7 @@ IOP_TEST_OBJS = $(patsubst %.o, %-iop.o, $(TEST_OBJS))
 IOP_INCS = $(COMMON_INCS) -I. -I$(PS2DEV)/iop/include -I$(PS2SDK)/common/include -I$(PS2SDK)/iop/include
 
 IOP_CFLAGS = -std=c99 -D_IOP -include ../../ps2-cunit-port/include/cunit-overrides.h
-IOP_LDFLAGS = -L$(PS2SDK)/../iop/lib -L.. -static -nostdlib
+IOP_LDFLAGS = -L$(PS2SDK)/../iop/lib -static -nostdlib
 
 run-all: test test-iop
 
