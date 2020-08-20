@@ -11,9 +11,13 @@ test: test-bin
 test-bin: $(TEST_OBJS) $(OBJS)
 	gcc -lcunit -o $@ $^
 
+libcunit.a: $(PS2DEV)/iop/lib/libcunit.a
+	cp $(PS2DEV)/iop/lib/libcunit.a .
+	iop-ar rsu $@ $(IOP_OBJS)
+
+
 libps2_cunit.a: $(IOP_OBJS)
-	iop-ar cru $@ $^
-	iop-ranlib $@
+	iop-ar crsu $@ $^
 
 %.o: %.c
 	gcc -I./include -o $@ -c $^

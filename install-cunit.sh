@@ -42,12 +42,19 @@ if [ "$IOP" -eq 1 ]; then
     sed -i'.bak' -e 's/ee\//iop\//g' -e 's/ee-/iop-/g' -e 's/mips64r5900el/mipsel-scei/' libtool
     echo "Building & installing for IOP"
     make install CC=iop-gcc LD=iop-ld AR=iop-ar ac_ct_AR=iop-ar RANLIB=iop-ranlib CFLAGS="-miop -nostdlib -D_IOP -DRELEASE=@RELEASE@ -Wall -W -pedantic -Wshadow -I'$PWD/CUnit/headers' -std=c99 -I'$PS2SDK/iop/include' -I'$PS2SDK/common/include' -I'$PS2CUNIT/include'" LDFLAGS="-nostdlib -static"
+
     echo "Removing math.h include from CUnit.h"
     sed -i'.math' -e '/#include.*math\.h/d' "$PS2DEV/iop/include/CUnit/CUnit.h"
+
+    echo "Compiling port compatibility library"
+    make libps2_cunit.a
+    make libcunit.a
+    cp libcunit.a $PS2DEV/iop/lib/cunit.a
 fi
 
-if [ "$DOC" -eq 1 ]; then
-    echo <<HERE
+
+if [ $DOC -eq 1 ]; then
+    cat <<HERE
 CUnit is now installed for EE & IOP in \$PS2DEV/ee and \$PS2DEV/iop
 
 EE instructions:

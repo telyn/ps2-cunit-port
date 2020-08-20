@@ -27,8 +27,8 @@ test-iop: iop-test.elf
 local-test: $(TEST_OBJS)
 	$(CC) $(LDFLAGS) -lcunit $^ -o $@
 
-iop-test.elf: $(IOP_TEST_OBJS) ../libps2_cunit.a
-	$(IOP_CC) $(IOP_LDFLAGS) $^ -lcunit -lps2_cunit -lgcc -o $@
+iop-test.elf: $(IOP_TEST_OBJS) $(PS2DEV)/iop/lib/libcunit.a
+	$(IOP_CC) $(IOP_LDFLAGS) $^ -lcunit -lgcc -o $@
 
 %-iop.o: %.c
 	$(IOP_CC) $(IOP_INCS) $(IOP_CFLAGS) -c $^ -o $@
