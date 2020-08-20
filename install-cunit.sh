@@ -40,5 +40,32 @@ if [ "$IOP" -eq 1 ]; then
     echo "Modifying libtool for IOP"
     sed -i'.bak' -e 's/ee\//iop\//g' -e 's/ee-/iop-/g' -e 's/mips64r5900el/mipsel-scei/' libtool
     echo "Building & installing for IOP"
-    make install CC=iop-gcc LD=iop-ld AR=iop-ar ac_ct_AR=iop-ar RANLIB=iop-ranlib CFLAGS="-miop -nostdlib -D_IOP -DRELEASE=@RELEASE@ -Wall -W -pedantic -Wshadow -I/Users/telyn/Code/CUnit-2.1-3/CUnit/Headers -std=c99 -I$PS2SDK/iop/include -I$PS2SDK/common/include -I$PS2CUNIT/include" LDFLAGS="-nostdlib -static"
+    make install CC=iop-gcc LD=iop-ld AR=iop-ar ac_ct_AR=iop-ar RANLIB=iop-ranlib CFLAGS="-miop -nostdlib -D_IOP -DRELEASE=@RELEASE@ -Wall -W -pedantic -Wshadow -I'$PWD/CUnit/headers' -std=c99 -I'$PS2SDK/iop/include' -I'$PS2SDK/common/include' -I'$PS2CUNIT/include'" LDFLAGS="-nostdlib -static"
+    echo "Removing math.h include from CUnit.h"
+    sed -i'.math' -e '/#include.*math\.h/d' "$PS2DEV/iop/include/CUnit/CUnit.h"
+fi
+
+if [ "$DOC" -eq 1 ]; then
+    echo <<HERE
+CUnit is now installed for EE & IOP in \$PS2DEV/ee and \$PS2DEV/iop
+
+EE instructions:
+  Compiling against and running the EE version follows the same procedure as
+  any other CUnit test program - no special steps are required beyond the
+  normal for compiling a PS2 program (i.e.  using ee-gcc) and adding -lcunit to
+  your link.
+
+IOP instructions:
+  Please see the README for ps2-cunit-port for information on how to compile
+  and run a test program for the IOP.
+  The tl;dr is that there's a fair few imports needed
+  (see iop-test/iop-imports.c), and if running via ps2link the alloc.irx from
+  \$PS2SDK/iop/irx needs to be loaded first, like in the following:
+
+      cd \$PS2SDK/iop/irx
+      ps2client execiop host:alloc.irx
+
+  Please feel free to open an issue at github.com/telyn/ps2-cunit-port if you
+  can't get it running. Pull requests are welcome too :-)
+HERE
 fi

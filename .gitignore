@@ -1,4 +1,7 @@
 CUnit*/
 cunit.tar.gz
 *.o
+*.a
+iop-test/local-test
+*.elf
 test-bin
