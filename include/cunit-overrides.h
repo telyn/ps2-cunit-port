@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <alloc.h>
 #include <thbase.h>
+#include "clock.h"
 
 #define snprintf _ps2_cunit_snprintf
 #define stderr 1

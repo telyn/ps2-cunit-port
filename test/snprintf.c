@@ -53,11 +53,11 @@ void test_snprintf_int_zero_precision_zero() {
 }
 
 void test_snprintf_int_negative() {
-	char format[] = "hello world %%";
+	char format[] = "hello %d world";
 	char dst[22] = { '\0' };
-	int res = _ps2_cunit_snprintf(dst, 22, format);
-	CU_ASSERT_STRING_EQUAL(dst, "hello world %");
-	CU_ASSERT_EQUAL(res, 13);
+	int res = _ps2_cunit_snprintf(dst, 22, format, -1530008);
+	CU_ASSERT_STRING_EQUAL(dst, "hello -1530008 world");
+	CU_ASSERT_EQUAL(res, 19);
 }
 
 void test_snprintf_int_smalln() {
@@ -65,7 +65,11 @@ void test_snprintf_int_smalln() {
 }
 
 void test_snprintf_uint() {
-	CU_ASSERT(0);
+	char format[] = "hello %u world";
+	char dst[22] = { '\0' };
+	int res = _ps2_cunit_snprintf(dst, 22, format, 1530008);
+	CU_ASSERT_STRING_EQUAL(dst, "hello 1530008 world");
+	CU_ASSERT_EQUAL(res, 19);
 }
 
 void test_snprintf_uint_smalln() {

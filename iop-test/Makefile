@@ -4,9 +4,9 @@ TEST_BINS = local-test ee-test.elf iop-test.elf
 TEST_OBJS = iop-test.o iop-imports.o
 IOP_TEST_OBJS = $(patsubst %.o, %-iop.o, $(TEST_OBJS))
 
-IOP_INCS = $(COMMON_INCS) -I$(PS2SDK)/common/include -I$(PS2SDK)/iop/include
+IOP_INCS = $(COMMON_INCS) -I. -I$(PS2DEV)/iop/include -I$(PS2SDK)/common/include -I$(PS2SDK)/iop/include
 
-IOP_CFLAGS = -std=c99 -D_IOP -include ../../ps2-cunit-port/include/cunit-overrides.h -nostdlib
+IOP_CFLAGS = -std=c99 -D_IOP -include ../../ps2-cunit-port/include/cunit-overrides.h
 IOP_LDFLAGS = -L$(PS2SDK)/../iop/lib -L.. -static -nostdlib
 
 run-all: test test-iop
@@ -27,8 +27,8 @@ test-iop: iop-test.elf
 local-test: $(TEST_OBJS)
 	$(CC) $(LDFLAGS) -lcunit $^ -o $@
 
-iop-test.elf: $(IOP_TEST_OBJS)
-	$(IOP_CC) $(IOP_LDFLAGS) $^ -lcunit -lps2_cunit -o $@
+iop-test.elf: $(IOP_TEST_OBJS) ../libps2_cunit.a
+	$(IOP_CC) $(IOP_LDFLAGS) $^ -lcunit -lps2_cunit -lgcc -o $@
 
 %-iop.o: %.c
 	$(IOP_CC) $(IOP_INCS) $(IOP_CFLAGS) -c $^ -o $@

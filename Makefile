@@ -1,8 +1,8 @@
-OBJS=lib/snprintf.o lib/snprintf_utils.o lib/toa.o lib/exit.o lib/setvbuf.o lib/assert.o
-IOP_OBJS=lib/snprintf-iop.o lib/snprintf_utils-iop.o lib/toa-iop.o lib/exit-iop.o lib/setvbuf-iop.o lib/assert-iop.o
+OBJS=lib/snprintf.o lib/snprintf_utils.o lib/toa.o lib/exit.o lib/setvbuf.o lib/assert.o lib/clock.o
+IOP_OBJS=$(patsubst %.o,%-iop.o,$(OBJS))
 TEST_OBJS=test/main.o test/snprintf.o test/snprintf_string.o test/snprintf_utils.o test/toa.o
 
-all: $(OBJS)
+all: libps2_cunit.a $(OBJS)
 
 .PHONY: test
 test: test-bin

@@ -27,6 +27,7 @@ int _ps2_cunit_snprintf (char * dst, size_t dstlen, const char *format, ... ) {
 		.bytes_written = 0,
 		.dst = dst,
 		.src = format,
+		.orig = format,
 		.values = &args
 	};
 	reset_snpf_format(&state.fmt);
@@ -127,8 +128,9 @@ void _ps2snpf_read_fmt_precision(struct snpf_state *state) {
 void _ps2snpf_read_fmt_type(struct snpf_state *state) {
 	char *tmp;
 	char buf[32] = { '\0' };
-	switch(*state->src++) {
+	switch(*state->src) {
 		case 'd':
+		case 'u':
 			{
 				int i = va_arg(*state->values, int);
 				if(state->fmt.precision == 0 && i == 0) {
@@ -151,12 +153,14 @@ void _ps2snpf_read_fmt_type(struct snpf_state *state) {
 				break;
 			}
 		default:
-			printf("Unexpected char %c at position %ld - pretending none of this ever happened", *state->src, state->src - state->orig);
+			printf("Unexpected char %c at position %ld - pretending none of this ever happened\n", *state->src, state->src - state->orig);
+			printf("format: '%s'\n", state->orig);
 			return;
 	}
+	state->src++;
 	int change = format_snpf_str(state->dst,
-			                     state->dstlen,
-			                     &state->fmt, tmp);
+			             state->dstlen,
+			             &state->fmt, tmp);
 	state->dst += change;
 	state->bytes_written += change;
 	reset_snpf_format(&state->fmt);

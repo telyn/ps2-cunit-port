@@ -77,7 +77,10 @@ void ps2_ftoa(double num, char *dst) {
 
     dst[i] = '.'; // add dot
 
-    fpart = fpart * pow(10, decimal_places);
+    int decimalCount = 0;
+    for(decimalCount = 0; decimalCount < decimal_places; decimalCount++) {
+	fpart *= 10;
+    }
 
     //printf("  fpart: %f\n", fpart);
 

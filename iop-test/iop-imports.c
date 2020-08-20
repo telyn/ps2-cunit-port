@@ -5,8 +5,8 @@
 #include <thbase.h>
 
 alloc_IMPORTS_start
-I_free
 I_malloc
+I_free
 alloc_IMPORTS_end
 
 stdio_IMPORTS_start
@@ -29,6 +29,7 @@ I_toupper
 sysclib_IMPORTS_end
 
 thbase_IMPORTS_start
+I_GetSystemTime
 I_ExitThread
 thbase_IMPORTS_end
 #endif

@@ -4,7 +4,7 @@ set -eo pipefail
 PS2CUNIT=$PWD
 DL=0
 CONFIG=1
-EE=1
+EE=0
 IOP=1
 
 if [ $DL -eq 1 ]; then
@@ -22,13 +22,15 @@ fi
 
 
 if [ $EE -eq 1 ]; then
+    make clean  || true
+    make distclean || true
     echo "Building & installing to $PS2DEV/ee"
     make install
-    echo "Cleaning up to prepare for IOP build"
-    make clean
 fi
 
 if [ "$IOP" -eq 1 ]; then
+    make clean || true
+    make distclean || true
     # using the ee binaries to perform the configure, since iop-gcc fails
     # configure checks. Just need PREFIX swapped, anyway, so should delete this
     # to save time later
