@@ -47,9 +47,9 @@ if [ "$IOP" -eq 1 ]; then
     sed -i'.math' -e '/#include.*math\.h/d' "$PS2DEV/iop/include/CUnit/CUnit.h"
 
     echo "Compiling port compatibility library"
-    make libps2_cunit.a
-    make libcunit.a
-    cp libcunit.a $PS2DEV/iop/lib/cunit.a
+    make iop/libps2_cunit.a
+    make iop/libcunit.a
+    cp iop/libcunit.a $PS2DEV/iop/lib/cunit.a
 fi
 
 
