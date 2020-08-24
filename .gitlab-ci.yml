@@ -1,0 +1,31 @@
+ include: https://gitlab.com/telyn/ps2runner/raw/master/gitlab-ci-template.yml
+
+ build:
+   image: ps2dev/ps2dev
+   script:
+     - apk add -u wget make
+     - wget -O $PS2DEV/iop/lib/libps2run.a https://github.com/telyn/ps2runner/releases/latest/download/libps2run.a
+     - make libcunit.a
+     - make -C test ee-test.elf iop-test.elf
+   artifacts:
+     paths:
+       - libcunit.a
+       - test/ee-test.elf
+       - test/iop-test.elf
+ test-ee:
+   extends: .ps2run
+   script:
+     - ps2run --ee ee-test.elf
+   dependencies:
+     - build
+   environment:
+      - PS2HOSTNAME=192.168.66.73
+test-iop:
+  extends: .ps2run
+    script:
+      - ps2run --iop alloc.irx
+      - ps2run --iop ee-test.elf
+    dependencies:
+       - build
+    environment:
+       - PS2HOSTNAME=192.168.66.73

@@ -1,0 +1,34 @@
+# Before usage, please be certain that your ps2client-tagged runners all have
+# `limit = 1` set in their config.toml. Having a non-1 limit set for ps2client
+# runners will likely result in your PS2 being power-cycled mid-test, breaking
+# your builds.
+# Please see the README available at https://gitlab.com/telyn/ps2runner for more
+# information on configuring a gitlab-runner for ps2runner
+#
+# Having concurrent runners
+# usage example:
+#
+# include: https://gitlab.com/telyn/ps2runner/raw/master/gitlab-ci-template.yml
+#
+# build:
+#   image: ps2dev/ps2dev
+#   script:
+#     - make test.elf
+#   artifacts:
+#     paths:
+#       - test.elf
+# test:
+#   extends: .ps2run
+#   script:
+#     - ps2run --ee test.elf
+#   dependencies:
+#     - build
+#
+.ps2run:
+  image: telyn/ps2runner
+  tags:
+    - ps2client
+  before_script:
+    - ps2bootlink
+  after_script:
+    - ps2poweroff
