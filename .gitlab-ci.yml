@@ -18,7 +18,7 @@
      - ps2run --ee ee-test.elf
    dependencies:
      - build
-   environment:
+   variables:
       PS2HOSTNAME: 192.168.66.73
 test-iop:
   extends: .ps2run
@@ -27,5 +27,5 @@ test-iop:
       - ps2run --iop ee-test.elf
     dependencies:
        - build
-    environment:
+    variables:
        PS2HOSTNAME: 192.168.66.73
