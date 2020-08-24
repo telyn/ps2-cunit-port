@@ -8,13 +8,15 @@
    image: ps2dev/ps2dev
    stage: build
    script:
-     - apk add -u wget make
+     - apk add -u wget make autoconf automake bash
      - wget -O $PS2DEV/iop/lib/libps2run.a https://github.com/telyn/ps2runner/releases/latest/download/libps2run.a
-     - make libcunit.a
+     - ./install-cunit.sh
+     - make
      - make -C test ee-test.elf iop-test.elf
    artifacts:
      paths:
-       - libcunit.a
+       - ee/libcunit.a
+       - iop/libcunit.a
        - test/ee-test.elf
        - test/iop-test.elf
  test-ee:
