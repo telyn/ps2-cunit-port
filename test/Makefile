@@ -15,7 +15,7 @@ CFLAGS = -std=c99
 EE_CFLAGS = -std=c99
 IOP_CFLAGS = -std=c99 -D_IOP -include ../include/iop-cunit-overrides.h
 LDFLAGS = -L..
-EE_LDFLAGS = -L../ee -L$(PS2DEV)/ee/lib -static
+EE_LDFLAGS = -Wl,--wrap=main -L../ee -L$(PS2DEV)/ee/lib -static
 IOP_LDFLAGS = -L../iop -static -nostdlib
 
 all: $(TEST_BINS)
@@ -33,7 +33,7 @@ local-test: $(TEST_OBJS)
 	$(CC) $(LDFLAGS) -lps2_cunit -lcunit $^ -o $@
 
 ee-test.elf: $(EE_TEST_OBJS)
-	$(EE_CC) $(EE_LDFLAGS) $^ -lps2_cunit -lcunit -o $@
+	$(EE_CC) $(EE_LDFLAGS) $^ -lcunit -lps2_cunit -o $@ -lps2run
 
 iop-test.elf: $(IOP_TEST_OBJS) $(PS2DEV)/iop/lib/libcunit.a
 	$(IOP_CC) $(IOP_LDFLAGS) $^ -lcunit -lgcc -o $@
