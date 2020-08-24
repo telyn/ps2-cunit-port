@@ -19,7 +19,7 @@
    dependencies:
      - build
    environment:
-      - PS2HOSTNAME=192.168.66.73
+      PS2HOSTNAME: 192.168.66.73
 test-iop:
   extends: .ps2run
     script:
@@ -28,4 +28,4 @@ test-iop:
     dependencies:
        - build
     environment:
-       - PS2HOSTNAME=192.168.66.73
+       PS2HOSTNAME: 192.168.66.73
