@@ -1,4 +1,4 @@
- include: https://gitlab.com/telyn/ps2runner/raw/master/gitlab-ci-template.yml
+ include: https://gitlab.com/telyn/ps2-cunit-port/-/raw/master/gitlab-ci-template.yml
 
  build:
    image: ps2dev/ps2dev
