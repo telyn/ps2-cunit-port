@@ -8,10 +8,11 @@
    image: telyn/ps2dev
    stage: build
    script:
-     - wget -O $PS2DEV/iop/lib/libps2run.a https://github.com/telyn/ps2runner/releases/latest/download/libps2run.a
+     - wget -O $PS2DEV/ee/lib/libps2run.a https://github.com/telyn/ps2runner/releases/latest/download/libps2run.a
      - ./install-cunit.sh
      - make
      - make -C test ee-test.elf iop-test.elf
+     - cp $PS2DEV/ee/lib/libcunit.a ee/libcunit.a
    artifacts:
      paths:
        - ee/libcunit.a
