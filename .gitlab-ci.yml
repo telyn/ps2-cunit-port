@@ -24,7 +24,7 @@ test-ee:
   extends: .ps2run
   stage: test
   script:
-    - ps2run --ee ee-test.elf
+    - ps2run --ee test/ee-test.elf
   dependencies:
     - build
   variables:
@@ -37,8 +37,8 @@ test-iop:
   extends: .ps2run
   stage: test
   script:
-    - ps2run --iop alloc.irx
-    - ps2run --iop ee-test.elf
+    - ps2run --iop /irx/alloc.irx
+    - ps2run --iop test/iop-test.elf
   dependencies:
      - build
   variables:
