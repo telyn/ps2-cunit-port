@@ -5,10 +5,9 @@
    - test
 
  build:
-   image: ps2dev/ps2dev
+   image: telyn/ps2dev
    stage: build
    script:
-     - apk add -u wget make autoconf automake bash
      - wget -O $PS2DEV/iop/lib/libps2run.a https://github.com/telyn/ps2runner/releases/latest/download/libps2run.a
      - ./install-cunit.sh
      - make
