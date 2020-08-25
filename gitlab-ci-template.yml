@@ -32,3 +32,8 @@
     - ps2bootlink
   after_script:
     - ps2poweroff
+  variables:
+    GIT_STRATEGY: none
+  retry:
+    max: 3
+    when: script_failure
