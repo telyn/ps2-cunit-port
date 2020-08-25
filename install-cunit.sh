@@ -45,6 +45,7 @@ if [ "$IOP" -eq 1 ]; then
 
     echo "Removing math.h include from CUnit.h"
     sed -i'.math' -e '/#include.*math\.h/d' "$PS2DEV/iop/include/CUnit/CUnit.h"
+    cd ..
 
     echo "Compiling port compatibility library"
     make iop/libps2_cunit.a
