@@ -38,3 +38,4 @@ test-iop:
      - build
   variables:
      PS2HOSTNAME: 192.168.66.73
+    GIT_STRATEGY: none
