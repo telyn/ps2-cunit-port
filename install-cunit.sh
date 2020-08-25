@@ -15,6 +15,7 @@ fi
 
 cd CUnit*
 if [ $CONFIG -eq 1 ]; then
+    make distclean || true
     echo "running autoreconf -i (CUnit's package maintainer should have done this >:-( )"
     autoreconf -i
     echo "Configuring for EE build"
@@ -24,7 +25,6 @@ fi
 
 if [ $EE -eq 1 ]; then
     make clean  || true
-    make distclean || true
     echo "Building & installing to $PS2DEV/ee"
     make install
 fi
