@@ -8,6 +8,8 @@ build:
   image: telyn/ps2dev
   stage: build
   script:
+    - apt update
+    - apt install -y libtool
     - wget -O $PS2DEV/ee/lib/libps2run.a https://github.com/telyn/ps2runner/releases/latest/download/libps2run.a
     - ./install-cunit.sh
     - make
