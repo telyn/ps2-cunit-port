@@ -29,9 +29,6 @@
   tags:
     - ps2client
   before_script:
-    - ps2bootlink
+    - ps2bootlink || ps2bootlink || ps2bootlink
   after_script:
     - ps2poweroff
-  retry:
-    max: 2
-    when: script_failure
